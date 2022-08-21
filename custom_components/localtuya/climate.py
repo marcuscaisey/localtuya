@@ -44,7 +44,9 @@ from .const import (
     CONF_HVAC_ACTION_SET,
     CONF_HVAC_MODE_DP,
     CONF_HVAC_MODE_SET,
+    CONF_MAX_TEMP,
     CONF_MAX_TEMP_DP,
+    CONF_MIN_TEMP,
     CONF_MIN_TEMP_DP,
     CONF_PRECISION,
     CONF_PRESET_DP,
@@ -122,6 +124,8 @@ def flow_schema(dps):
         ),
         vol.Optional(CONF_MAX_TEMP_DP): vol.In(dps),
         vol.Optional(CONF_MIN_TEMP_DP): vol.In(dps),
+        vol.Optional(CONF_MAX_TEMP): float,
+        vol.Optional(CONF_MIN_TEMP): float,
         vol.Optional(CONF_PRECISION): vol.In(
             [PRECISION_WHOLE, PRECISION_HALVES, PRECISION_TENTHS]
         ),
