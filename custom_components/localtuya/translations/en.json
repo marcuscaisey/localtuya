@@ -177,7 +177,6 @@
                     "temperature_unit": "Temperature Unit (optional)",
                     "hvac_mode_dp": "HVAC Mode DP (optional)",
                     "hvac_mode_set": "HVAC Mode Set (optional)",
-                    "hvac_off_mode_name": "HVAC Off Mode Name (optional, overrides HVAC Mode Set)",
                     "hvac_heat_mode_name": "HVAC Heat Mode Name (optional, overrides HVAC Mode Set)",
                     "hvac_cool_mode_name": "HVAC Cool Mode Name (optional, overrides HVAC Mode Set)",
                     "hvac_heat_cool_mode_name": "HVAC Heat/Cool Mode Name (optional, overrides HVAC Mode Set)",

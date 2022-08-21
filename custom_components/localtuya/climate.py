@@ -49,7 +49,6 @@ from .const import (
     CONF_HVAC_ACTION_SET,
     CONF_HVAC_MODE_DP,
     CONF_HVAC_MODE_SET,
-    CONF_HVAC_OFF_MODE_NAME,
     CONF_HVAC_HEAT_MODE_NAME,
     CONF_HVAC_COOL_MODE_NAME,
     CONF_HVAC_HEAT_COOL_MODE_NAME,
@@ -143,7 +142,6 @@ def flow_schema(dps):
         ),
         vol.Optional(CONF_HVAC_MODE_DP): vol.In(dps),
         vol.Optional(CONF_HVAC_MODE_SET): vol.In(list(HVAC_MODE_SETS.keys())),
-        vol.Optional(CONF_HVAC_OFF_MODE_NAME): cv.string,
         vol.Optional(CONF_HVAC_HEAT_MODE_NAME): cv.string,
         vol.Optional(CONF_HVAC_COOL_MODE_NAME): cv.string,
         vol.Optional(CONF_HVAC_HEAT_COOL_MODE_NAME): cv.string,
@@ -211,7 +209,6 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
             3. an empty dict
         """
         hvac_mode_name_settings = [
-            CONF_HVAC_OFF_MODE_NAME,
             CONF_HVAC_HEAT_MODE_NAME,
             CONF_HVAC_COOL_MODE_NAME,
             CONF_HVAC_HEAT_COOL_MODE_NAME,
@@ -220,7 +217,6 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
             CONF_HVAC_FAN_ONLY_MODE_NAME,
         ]
         hvac_mode_name_setting_to_hvac_mode = {
-            CONF_HVAC_OFF_MODE_NAME: HVAC_MODE_OFF,
             CONF_HVAC_HEAT_MODE_NAME: HVAC_MODE_HEAT,
             CONF_HVAC_COOL_MODE_NAME: HVAC_MODE_COOL,
             CONF_HVAC_HEAT_COOL_MODE_NAME: HVAC_MODE_HEAT_COOL,
