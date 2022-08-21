@@ -341,6 +341,8 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
     @property
     def min_temp(self):
         """Return the minimum temperature."""
+        if self.has_config(CONF_MIN_TEMP):
+            return self._config[CONF_MIN_TEMP]
         if self.has_config(CONF_MIN_TEMP_DP):
             return self.dps_conf(CONF_MIN_TEMP_DP)
         return DEFAULT_MIN_TEMP
@@ -348,6 +350,8 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
     @property
     def max_temp(self):
         """Return the maximum temperature."""
+        if self.has_config(CONF_MAX_TEMP):
+            return self._config[CONF_MAX_TEMP]
         if self.has_config(CONF_MAX_TEMP_DP):
             return self.dps_conf(CONF_MAX_TEMP_DP)
         return DEFAULT_MAX_TEMP
