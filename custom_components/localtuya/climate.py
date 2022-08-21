@@ -14,7 +14,11 @@ from homeassistant.components.climate.const import (
     CURRENT_HVAC_HEAT,
     CURRENT_HVAC_IDLE,
     HVAC_MODE_AUTO,
+    HVAC_MODE_COOL,
+    HVAC_MODE_DRY,
+    HVAC_MODE_FAN_ONLY,
     HVAC_MODE_HEAT,
+    HVAC_MODE_HEAT_COOL,
     HVAC_MODE_OFF,
     PRESET_AWAY,
     PRESET_ECO,
@@ -33,6 +37,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
 )
+import homeassistant.helpers.config_validation as cv
 
 from .common import LocalTuyaEntity, async_setup_entry
 from .const import (
@@ -44,6 +49,12 @@ from .const import (
     CONF_HVAC_ACTION_SET,
     CONF_HVAC_MODE_DP,
     CONF_HVAC_MODE_SET,
+    CONF_HVAC_HEAT_MODE_NAME,
+    CONF_HVAC_COOL_MODE_NAME,
+    CONF_HVAC_HEAT_COOL_MODE_NAME,
+    CONF_HVAC_AUTO_MODE_NAME,
+    CONF_HVAC_DRY_MODE_NAME,
+    CONF_HVAC_FAN_ONLY_MODE_NAME,
     CONF_MAX_TEMP,
     CONF_MAX_TEMP_DP,
     CONF_MIN_TEMP,
@@ -131,6 +142,12 @@ def flow_schema(dps):
         ),
         vol.Optional(CONF_HVAC_MODE_DP): vol.In(dps),
         vol.Optional(CONF_HVAC_MODE_SET): vol.In(list(HVAC_MODE_SETS.keys())),
+        vol.Optional(CONF_HVAC_HEAT_MODE_NAME): cv.string,
+        vol.Optional(CONF_HVAC_COOL_MODE_NAME): cv.string,
+        vol.Optional(CONF_HVAC_HEAT_COOL_MODE_NAME): cv.string,
+        vol.Optional(CONF_HVAC_AUTO_MODE_NAME): cv.string,
+        vol.Optional(CONF_HVAC_DRY_MODE_NAME): cv.string,
+        vol.Optional(CONF_HVAC_FAN_ONLY_MODE_NAME): cv.string,
         vol.Optional(CONF_HVAC_ACTION_DP): vol.In(dps),
         vol.Optional(CONF_HVAC_ACTION_SET): vol.In(list(HVAC_ACTION_SETS.keys())),
         vol.Optional(CONF_ECO_DP): vol.In(dps),
@@ -170,9 +187,7 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
             CONF_TARGET_PRECISION, self._precision
         )
         self._conf_hvac_mode_dp = self._config.get(CONF_HVAC_MODE_DP)
-        self._conf_hvac_mode_set = HVAC_MODE_SETS.get(
-            self._config.get(CONF_HVAC_MODE_SET), {}
-        )
+        self._conf_hvac_mode_set = self._get_hvac_mode_set_from_config()
         self._conf_preset_dp = self._config.get(CONF_PRESET_DP)
         self._conf_preset_set = PRESET_SETS.get(self._config.get(CONF_PRESET_SET), {})
         self._conf_hvac_action_dp = self._config.get(CONF_HVAC_ACTION_DP)
@@ -185,6 +200,41 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
             CONF_PRESET_DP
         )
         _LOGGER.debug("Initialized climate [%s]", self.name)
+
+    def _get_hvac_mode_set_from_config(self):
+        """
+        Get HVAC mode set by either returning:
+            1. a dict built from all of the CONF_HVAC_*_MODE_NAME values which have been set
+            2. the corresponding dict from HVAC_MODE_SETS if CONF_HVAC_MODE_SET has been set
+            3. an empty dict
+        """
+        hvac_mode_name_settings = [
+            CONF_HVAC_HEAT_MODE_NAME,
+            CONF_HVAC_COOL_MODE_NAME,
+            CONF_HVAC_HEAT_COOL_MODE_NAME,
+            CONF_HVAC_AUTO_MODE_NAME,
+            CONF_HVAC_DRY_MODE_NAME,
+            CONF_HVAC_FAN_ONLY_MODE_NAME,
+        ]
+        hvac_mode_name_setting_to_hvac_mode = {
+            CONF_HVAC_HEAT_MODE_NAME: HVAC_MODE_HEAT,
+            CONF_HVAC_COOL_MODE_NAME: HVAC_MODE_COOL,
+            CONF_HVAC_HEAT_COOL_MODE_NAME: HVAC_MODE_HEAT_COOL,
+            CONF_HVAC_AUTO_MODE_NAME: HVAC_MODE_AUTO,
+            CONF_HVAC_DRY_MODE_NAME: HVAC_MODE_DRY,
+            CONF_HVAC_FAN_ONLY_MODE_NAME: HVAC_MODE_FAN_ONLY,
+        }
+        hvac_mode_set = {}
+        for setting in hvac_mode_name_settings:
+            if self.has_config(setting):
+                mode = hvac_mode_name_setting_to_hvac_mode[setting]
+                hvac_mode_set[mode] = self._config[setting]
+        if hvac_mode_set:
+            return hvac_mode_set
+
+        self._conf_hvac_mode_set = HVAC_MODE_SETS.get(
+            self._config.get(CONF_HVAC_MODE_SET), {}
+        )
 
     @property
     def supported_features(self):
