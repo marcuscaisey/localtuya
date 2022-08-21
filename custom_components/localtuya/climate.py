@@ -44,7 +44,9 @@ from .const import (
     CONF_HVAC_ACTION_SET,
     CONF_HVAC_MODE_DP,
     CONF_HVAC_MODE_SET,
+    CONF_MAX_TEMP,
     CONF_MAX_TEMP_DP,
+    CONF_MIN_TEMP,
     CONF_MIN_TEMP_DP,
     CONF_PRECISION,
     CONF_PRESET_DP,
@@ -122,6 +124,8 @@ def flow_schema(dps):
         ),
         vol.Optional(CONF_MAX_TEMP_DP): vol.In(dps),
         vol.Optional(CONF_MIN_TEMP_DP): vol.In(dps),
+        vol.Optional(CONF_MAX_TEMP): vol.Coerce(float),
+        vol.Optional(CONF_MIN_TEMP): vol.Coerce(float),
         vol.Optional(CONF_PRECISION): vol.In(
             [PRECISION_WHOLE, PRECISION_HALVES, PRECISION_TENTHS]
         ),
@@ -337,6 +341,8 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
     @property
     def min_temp(self):
         """Return the minimum temperature."""
+        if self.has_config(CONF_MIN_TEMP):
+            return self._config[CONF_MIN_TEMP]
         if self.has_config(CONF_MIN_TEMP_DP):
             return self.dps_conf(CONF_MIN_TEMP_DP)
         return DEFAULT_MIN_TEMP
@@ -344,6 +350,8 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
     @property
     def max_temp(self):
         """Return the maximum temperature."""
+        if self.has_config(CONF_MAX_TEMP):
+            return self._config[CONF_MAX_TEMP]
         if self.has_config(CONF_MAX_TEMP_DP):
             return self.dps_conf(CONF_MAX_TEMP_DP)
         return DEFAULT_MAX_TEMP
