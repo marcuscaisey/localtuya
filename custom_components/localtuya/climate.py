@@ -192,7 +192,7 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
         supported_features = 0
         if self.has_config(CONF_TARGET_TEMPERATURE_DP):
             supported_features = supported_features | SUPPORT_TARGET_TEMPERATURE
-        if self.has_config(CONF_MAX_TEMP_DP) or self.has_config(CONF_MAX_TEMP):
+        if self.has_config(CONF_MAX_TEMP_DP):
             supported_features = supported_features | SUPPORT_TARGET_TEMPERATURE_RANGE
         if self.has_config(CONF_PRESET_DP) or self.has_config(CONF_ECO_DP):
             supported_features = supported_features | SUPPORT_PRESET_MODE
