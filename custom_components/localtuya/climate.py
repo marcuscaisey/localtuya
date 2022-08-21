@@ -33,6 +33,7 @@ from homeassistant.const import (
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
 )
+import homeassistant.helpers.config_validation as cv
 
 from .common import LocalTuyaEntity, async_setup_entry
 from .const import (
@@ -130,7 +131,10 @@ def flow_schema(dps):
             [PRECISION_WHOLE, PRECISION_HALVES, PRECISION_TENTHS]
         ),
         vol.Optional(CONF_HVAC_MODE_DP): vol.In(dps),
-        vol.Optional(CONF_HVAC_MODE_SET): vol.In(list(HVAC_MODE_SETS.keys())),
+        vol.Optional(CONF_HVAC_MODE_SET): vol.Any(
+            vol.In(list(HVAC_MODE_SETS.keys())),
+            {cv.string: cv.string},
+        ),
         vol.Optional(CONF_HVAC_ACTION_DP): vol.In(dps),
         vol.Optional(CONF_HVAC_ACTION_SET): vol.In(list(HVAC_ACTION_SETS.keys())),
         vol.Optional(CONF_ECO_DP): vol.In(dps),
